@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SqLiteTrackLoader implements TrackLoader, Closeable {
     private final Connection connection;
-    private final static String SQLQuery = "select tracks.Name,Title,genres.Name,Composer,Milliseconds,Bytes,UnitPrice from tracks,albums,genres where tracks.TrackId = tracks.TrackId and tracks.AlbumId = albums.AlbumId and tracks.GenreId = genres.GenreId";
+    private final static String SQLQuery = "select tracks.Name,Title,genres.Name as GenreName,Composer,Milliseconds,Bytes,UnitPrice from tracks,albums,genres where tracks.TrackId = tracks.TrackId and tracks.AlbumId = albums.AlbumId and tracks.GenreId = genres.GenreId";
 
     public SqLiteTrackLoader(String filename) throws SQLException {
         connection = DriverManager.getConnection(getURL(filename));
@@ -34,9 +34,9 @@ public class SqLiteTrackLoader implements TrackLoader, Closeable {
         while (true) {
             if (resultSet.next()) {
                 result.add(new Track(
-                        resultSet.getString("tracks.Name"),
+                        resultSet.getString("Name"),
                         resultSet.getString("Title"),
-                        resultSet.getString("genres.Name"),
+                        resultSet.getString("GenreName"),
                         resultSet.getString("Composer"),
                         resultSet.getInt("Milliseconds"),
                         resultSet.getInt("Bytes"),
